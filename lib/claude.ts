@@ -20,10 +20,9 @@ export async function getClaudeInsight(signal: SignalData): Promise<string> {
 
     console.log('[CLAUDE] Generating insight for', signal.token_symbol)
 
-    const prompt = `You are a blunt Solana trading analyst. A new token just got flagged. Give a 2-3 sentence take on what the numbers mean for a degen trader right now. Use the actual numbers. No fluff. No generic advice. Be specific.
+    const prompt = `You are a blunt Solana trading analyst. A new token just got flagged by an accumulation radar. Your job is to interpret the raw numbers honestly — not to justify the signal tier. Just tell the trader what the data is actually saying.
 
 Token: ${signal.token_name} (${signal.token_symbol})
-Verdict: ${signal.signal_tier}
 1h price change: ${signal.price_change_1h?.toFixed(2)}%
 Buy/Sell ratio: ${signal.buy_sell_ratio?.toFixed(2)}x
 Wallets entering: ${signal.smart_wallet_count}
@@ -31,7 +30,7 @@ Holders: ${signal.holder_count}
 Confidence: ${signal.confidence_score?.toFixed(0)}%
 Price: $${signal.price?.toFixed(8)}
 
-Be direct. Start with the most important thing a trader needs to know right now. Under 60 words.`
+Write 2-3 sentences maximum. Focus on what stands out most in these numbers. If the buy pressure is strong, say so. If the wallet count is thin, say so. If the price is already moving fast, flag it. Be specific about the actual numbers — not generic. Do not recommend buying or selling. Do not repeat the signal tier. Just interpret what the data means for someone watching this token right now.`
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',

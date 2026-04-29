@@ -90,7 +90,7 @@ export async function sendTelegramAlert(signal: SignalData, isUpgrade: boolean) 
 SIGNAL — ${emoji} ${signal.signal_tier}
 ${upgradeTag}
 
-🏷 *${signal.token_name}* (${signal.token_symbol})
+🏷 *${signal.token_name}* ($${signal.token_symbol})
 📍 Verdict: *${verdict}*
 
 💡 *What this means:*
