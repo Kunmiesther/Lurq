@@ -361,13 +361,17 @@ export default function Home() {
       </div>
 
       {/* STATS BAR */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', borderBottom: '1px solid #1a1a2e', overflowX: 'auto' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', borderBottom: '1px solid #1a1a2e' }}>
         {statsItems.map((s, i) => (
-          <div key={s.label} style={{ padding: '12px 16px', borderRight: i < 3 ? '1px solid #1a1a2e' : 'none', minWidth: '80px' }}>
+          <div key={s.label} style={{
+            padding: '12px 16px',
+            borderRight: i % 2 === 0 ? '1px solid #1a1a2e' : 'none',
+            borderBottom: i < 2 ? '1px solid #1a1a2e' : 'none',
+          }}>
             <div style={{ fontFamily: 'monospace', fontSize: '9px', letterSpacing: '1px', color: '#475569', textTransform: 'uppercase', marginBottom: '4px' }}>
               {s.label}
             </div>
-            <div style={{ fontWeight: 700, fontSize: '18px', color: s.col }}>
+            <div style={{ fontWeight: 700, fontSize: '20px', color: s.col }}>
               {s.val}
             </div>
           </div>
