@@ -21,14 +21,24 @@ export async function analyzeToken(token: DexToken) {
     }
 
     const buySellRatio = birdeyeSells > 0 ? birdeyeBuys / birdeyeSells : birdeyeBuys
-    const isPriceFlat = Math.abs(token.priceChange1h) < 10
-    const isBuyPressureRising = buySellRatio > 1.2
-    const isMultipleWallets = token.buys >= 3
-    const hasLiquidity = token.liquidity > 1000
 
-    console.log(`[DETECTOR] ${token.symbol} | flat:${isPriceFlat} buys:${isBuyPressureRising} wallets:${isMultipleWallets} liq:${hasLiquidity}`)
+    // SIGNAL 1: Strong buy pressure — buys clearly outnumbering sells
+    const isBuyPressureStrong = buySellRatio >= 1.5
 
-    const signals = [isPriceFlat, isBuyPressureRising, isMultipleWallets, hasLiquidity]
+    // SIGNAL 2: Multiple wallets — enough distinct activity
+    const isMultipleWallets = token.buys >= 5
+
+    // SIGNAL 3: Liquidity — enough to matter
+    const hasLiquidity = token.liquidity >= 2000
+
+    // SIGNAL 4: Price momentum — for NEW tokens, any positive momentum is good
+    // We no longer penalize price movement — new tokens are SUPPOSED to move
+    // Instead we reward positive momentum and penalize dumps
+    const hasMomentum = token.priceChange1h > -20 // not dumping hard
+
+    console.log(`[DETECTOR] ${token.symbol} | buys:${isBuyPressureStrong} wallets:${isMultipleWallets} liq:${hasLiquidity} momentum:${hasMomentum} | ratio:${buySellRatio.toFixed(2)} price:${token.priceChange1h}%`)
+
+    const signals = [isBuyPressureStrong, isMultipleWallets, hasLiquidity, hasMomentum]
     const score = signals.filter(Boolean).length
 
     let tier = null
