@@ -106,7 +106,7 @@ ${reasons.join('\n')}
 ⚠️ Not financial advice. DYOR.
 
 🔗 [View on Birdeye](https://birdeye.so/token/${signal.token_address}?chain=solana)
-📊 [Open LURQ Dashboard](https://lurq.vercel.app)
+📊 [Open LURQ Dashboard](https://lurq-sol.vercel.app)
 
 \`${signal.token_address}\`
 
