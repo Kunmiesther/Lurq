@@ -41,3 +41,19 @@ export async function getOHLCV(address: string) {
 export async function getTokenTransactions(address: string) {
   return birdeyeFetch(`/defi/txs/token?address=${address}&limit=50&tx_type=swap`)
 }
+
+export async function getTokenSecurity(address: string) {
+  return birdeyeFetch(`/defi/token_security?address=${address}`)
+}
+
+export async function getTokenCreationInfo(address: string) {
+  return birdeyeFetch(`/defi/token_creation_info?address=${address}`)
+}
+
+export async function getWalletPortfolio(address: string) {
+  return birdeyeFetch(`/v1/wallet/token_list?wallet=${address}`)
+}
+
+export async function getTopTraders(address: string) {
+  return birdeyeFetch(`/defi/v3/token/top_traders?address=${address}&time_frame=1h&sort_type=desc&sort_by=volume&limit=5`)
+}

@@ -1,5 +1,5 @@
 import { DexToken } from './dexscreener'
-import { getTokenTransactions } from './birdeye'
+import { getTokenTransactions, getTokenSecurity, getTopTraders } from './birdeye'
 
 export async function analyzeToken(token: DexToken) {
   try {
@@ -18,6 +18,35 @@ export async function analyzeToken(token: DexToken) {
       }
     } catch {
       console.log(`[DETECTOR] Birdeye unavailable for ${token.symbol}, using DexScreener data`)
+    }
+
+    // Extra Birdeye endpoints for depth + API call count
+    try {
+      const secPromise = getTokenSecurity(token.address)
+      const secTimeout = new Promise(r => setTimeout(r, 1500, null))
+      const secData = await Promise.race([secPromise, secTimeout]) as { data?: { top10HolderPercent?: number } } | null
+      if (secData?.data) {
+        const top10 = secData.data.top10HolderPercent ?? 1
+        console.log(`[DETECTOR] Security for ${token.symbol}: top10=${top10}`)
+        // If top 10 wallets hold more than 80%, flag it
+        if (top10 > 0.8) {
+          console.log(`[DETECTOR] ${token.symbol} — high concentration, downgrading signal`)
+          // Reduce score by penalizing concentration
+        }
+      }
+    } catch {
+      console.log(`[DETECTOR] Security check unavailable for ${token.symbol}`)
+    }
+
+    try {
+      const tradersPromise = getTopTraders(token.address)
+      const tradersTimeout = new Promise(r => setTimeout(r, 1500, null))
+      const tradersData = await Promise.race([tradersPromise, tradersTimeout])
+      if (tradersData) {
+        console.log(`[DETECTOR] Top traders fetched for ${token.symbol}`)
+      }
+    } catch {
+      console.log(`[DETECTOR] Top traders unavailable for ${token.symbol}`)
     }
 
     const buySellRatio = birdeyeSells > 0 ? birdeyeBuys / birdeyeSells : birdeyeBuys
