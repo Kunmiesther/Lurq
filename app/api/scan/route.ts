@@ -61,8 +61,8 @@ export async function GET() {
             tier_from: existing.signal_tier,
             tier_to: signal.signal_tier,
           })
-          try {
-            await sendTelegramAlert(signal, true)
+          🏷try {
+            await sendTelegramAlert(signal, true, existing.signal_tier)
           } catch (tgErr) {
             console.log('[SCAN] Telegram alert failed (will work on Vercel):', tgErr)
           }
