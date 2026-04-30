@@ -14,9 +14,11 @@
 
 LURQ is a real-time accumulation radar built for Solana degens.
 
-It monitors newly launched Solana tokens and detects the quiet phase — when smart wallets are loading positions and the price hasn't moved yet. When the signals align, LURQ surfaces the token on a live dashboard, fires a Telegram alert, and gives you an AI-powered breakdown of exactly what the data means and what to do with it.
+It monitors newly launched Solana tokens and detects the quiet phase — when smart wallets are loading positions and the price hasn't moved yet. When the signals align, LURQ surfaces the token on a live dashboard, fires a Telegram alert with a clear verdict, and delivers a Claude AI-powered breakdown of exactly what the data means.
 
-Most tools show you what already happened. LURQ shows you what's about to.
+But LURQ doesn't just tell you when to get in. It tells you when to get out.
+
+When the same wallets that triggered an entry signal start distributing — LURQ fires a **SMART MONEY EXITING** alert. Most tools never tell you when to leave. LURQ does.
 
 > *The price is flat. The smart money isn't.*
 
@@ -24,11 +26,11 @@ Most tools show you what already happened. LURQ shows you what's about to.
 
 ## The Problem
 
-Every degen has been here. You check the chart. The token is already up 10x. Somewhere in the back of your head you think — I saw that token. The wallets that made money were already in hours ago. Quietly. No announcement. While the price was still flat and nobody was watching.
+Every degen has been here. You check the chart. The token is already up 10x. The wallets that made money were in hours ago — quietly, no announcement, while the price was still flat and retail hadn't noticed yet.
 
-The tools available today don't solve this. They're either reactive (showing you what already happened), noisy (alerting on everything and meaning nothing), or incomplete (telling you when to enter but never when the signal shifts).
+The tools available today don't solve this. They're reactive, noisy, or incomplete. They show you what happened. They alert on everything. They tell you when to enter but never when the signal shifts.
 
-LURQ was built to fix that. It watches the accumulation phase on brand new Solana tokens in real time, runs a multi-signal check on each one, and tells you clearly whether to ape in, monitor, or avoid — with an AI breakdown explaining the reasoning in plain English.
+LURQ was built to live in the window before the move — and to stay watching after you're in.
 
 ---
 
@@ -37,8 +39,24 @@ LURQ was built to fix that. It watches the accumulation phase on brand new Solan
 | Tier | Verdict | What it means |
 |------|---------|----------------|
 | 🟢 CONVICTION | ⚡ APE IN | 4/4 signals confirmed. Wallets loading, buy pressure strong, liquidity healthy. This is the entry window. |
-| 🟡 ALERT | 👀 MONITOR — NOT YET | 3/4 signals confirmed. Pattern building but not fully there. Wait for confirmation before entry. |
-| 🔴 WATCH | 🚫 AVOID FOR NOW | 2/4 signals confirmed. Mixed picture. Not enough to act on. Stay out for now. |
+| 🟡 ALERT | 👀 MONITOR — NOT YET | 3/4 signals confirmed. Pattern building but not fully there. Wait for confirmation. |
+| 🔴 WATCH | 🚫 AVOID FOR NOW | 2/4 signals confirmed. Mixed picture. Not enough to act on. Stay out. |
+
+---
+
+## Signal Shift — The Exit Alert
+
+When a token's signal tier **drops** (e.g. CONVICTION → WATCH), LURQ fires a special alert:
+
+```
+⚠️ SMART MONEY EXITING
+Signal downgraded: CONVICTION → WATCH
+
+The same wallets that triggered entry are now distributing.
+This is your exit signal.
+```
+
+This is something most tools never build. LURQ tracks not just entry signals but signal degradation — giving degens an actual exit cue based on the same wallet data that brought them in.
 
 ---
 
@@ -49,7 +67,8 @@ DexScreener API
   Discovers newly launched Solana tokens (under 24 hours old)
         ↓
 Birdeye Data API
-  Fetches transaction history for deeper buy/sell analysis
+  Fetches transaction history, security data, and top trader info
+  for deeper on-chain analysis
         ↓
 LURQ Detector
   Runs 4-signal accumulation check per token
@@ -58,15 +77,19 @@ LURQ Detector
   Liquidity health — enough depth to matter
   Price momentum — positive trend, not dumping
         ↓
+Signal Shift Detection
+  Tracks tier changes — fires exit alert on downgrade
+        ↓
 Claude AI (Anthropic)
-  Generates a plain-English insight specific to that
-  token's exact numbers — not generic, not templated
+  Generates plain-English insight specific to that
+  token's exact numbers — not a template, not generic
         ↓
 Supabase
-  Stores signals, tracks tier upgrades over time
+  Stores signals, tracks tier history over time
         ↓
 Dashboard + Telegram
-  Fires alert with verdict, breakdown, and AI insight
+  Fires alert with verdict, breakdown, AI insight,
+  and exit signal when smart money starts leaving
 ```
 
 ---
@@ -75,7 +98,22 @@ Dashboard + Telegram
 
 Every signal drops straight to Telegram — no dashboard required.
 
-Each alert includes the signal tier and verdict, a plain-English explanation of what the pattern means, a per-metric breakdown with honest color coding, a Claude AI insight specific to that token's exact numbers, price, holders, confidence score, and direct links to Birdeye and the live dashboard.
+**Entry alerts include:**
+- Signal tier and verdict (APE IN / MONITOR / AVOID)
+- Plain-English explanation of what the pattern means
+- Per-metric breakdown with honest color coding
+- Claude AI insight specific to that token's exact numbers
+- Price, holders, confidence score
+- Direct links to Birdeye and the live dashboard
+
+**Exit alerts look like this:**
+```
+⚠️ SMART MONEY EXITING
+Signal downgraded: CONVICTION → WATCH
+
+The same wallets that triggered entry are distributing.
+This is your exit signal. Get out or tighten your stop.
+```
 
 Join the channel: [t.me/lurqsignals](https://t.me/lurqsignals)
 
@@ -84,12 +122,13 @@ Join the channel: [t.me/lurqsignals](https://t.me/lurqsignals)
 ## Dashboard Features
 
 - Live signal feed — auto-refreshes every 5 minutes
-- Signal legend — clear explanation of each tier on the page
+- Signal guide — clear explanation of each tier visible on page
 - Verdict label — APE IN, MONITOR, or AVOID displayed prominently on every card
-- Per-metric breakdown — buy pressure, wallet count, price momentum, confidence
+- Signal Shift badges — SMART MONEY EXITING and SIGNAL STRENGTHENING banners on cards
+- Per-metric breakdown — buy pressure, wallet count, price momentum, confidence bar
 - Copy address — one click to copy the contract
 - View on Birdeye — direct link to full token data
-- Watch button — browser notifications when a token you're tracking upgrades tiers
+- Watch button — browser notifications when a token you're tracking shifts tiers
 - Fully mobile responsive
 
 ---
@@ -100,7 +139,6 @@ Join the channel: [t.me/lurqsignals](https://t.me/lurqsignals)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
 ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=flat-square&logo=supabase&logoColor=white)
 ![Vercel](https://img.shields.io/badge/Vercel-000000?style=flat-square&logo=vercel&logoColor=white)
-![Tailwind](https://img.shields.io/badge/Tailwind-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
 ![Telegram](https://img.shields.io/badge/Telegram-26A5E4?style=flat-square&logo=telegram&logoColor=white)
 ![Claude](https://img.shields.io/badge/Claude_AI-7c3aed?style=flat-square)
 
@@ -124,6 +162,8 @@ Join the channel: [t.me/lurqsignals](https://t.me/lurqsignals)
 | `/defi/txs/token` | Transaction history for buy/sell signal analysis |
 | `/defi/token_overview` | Price, holder count, volume data |
 | `/defi/ohlcv` | Price candles for momentum detection |
+| `/defi/token_security` | Holder concentration and rug detection |
+| `/defi/v3/token/top_traders` | Top trader activity per token |
 | `/defi/tokenlist` | Fallback token discovery |
 
 ---
@@ -147,8 +187,6 @@ npm install
 ```
 
 ### Environment Variables
-
-Create `.env.local`:
 
 ```env
 BIRDEYE_API_KEY=your_birdeye_key
@@ -209,14 +247,14 @@ lurq/
 │   ├── layout.tsx            # App shell
 │   ├── globals.css           # Design tokens
 │   └── api/
-│       ├── scan/route.ts     # Scanner endpoint
+│       ├── scan/route.ts     # Scanner + signal shift detection
 │       └── signals/route.ts  # Signals feed
 ├── lib/
 │   ├── birdeye.ts            # Birdeye Data API
 │   ├── dexscreener.ts        # Token discovery
 │   ├── detector.ts           # Signal logic
 │   ├── claude.ts             # AI insight generation
-│   └── telegram.ts           # Alert system
+│   └── telegram.ts           # Alert system with exit signals
 └── vercel.json               # Cron config
 ```
 
@@ -225,7 +263,6 @@ lurq/
 ## Roadmap
 
 - Smart wallet scoring — track historical win rate per wallet across previous tokens
-- Exit signal alerts — notify when the wallets that triggered entry start distributing
 - Wallet watchlist — add wallets you trust and get personalised signals when they move
 - Multi-chain expansion — Base, BSC
 
@@ -233,7 +270,7 @@ lurq/
 
 ## Disclaimer
 
-LURQ is a data intelligence tool, not financial advice. All signals are algorithmic and based on on-chain data patterns. Always do your own research before making any trading decisions.
+LURQ is a data intelligence tool, not financial advice. All signals are algorithmic and based on on-chain data patterns. Always do your own research.
 
 ---
 
